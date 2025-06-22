@@ -1,0 +1,37 @@
+
+
+# 仮想環境の有効化（Windows）
+.\venv\Scripts\activate
+
+#
+python app.py
+
+#
+cd grocery2025
+
+#pass
+& "C:\PostgreSQL\17\bin\psql.exe" -U postgres
+
+# 必要なパッケージのインストール
+pip install flask psycopg2-binary gunicorn python-dotenv
+
+# requirements.txt の更新
+pip freeze > requirements.txt
+
+# Flask 開発用サーバの起動
+set FLASK_APP=app.py
+set FLASK_ENV=development
+flask run
+
+# PostgreSQL への接続（例）
+psql -h localhost -U postgres -d grocery2025
+
+# Git 操作（初回）
+git init
+git add .
+git commit -m "initial commit"
+
+# Heroku デプロイ（初回）
+heroku login
+heroku create grocery2025
+git push heroku main

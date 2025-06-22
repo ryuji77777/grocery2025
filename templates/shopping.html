@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+<head><title>買い物リスト</title></head>
+<body>
+    <h1>買い物リスト</h1>
+    <ul>
+        {% for item in items %}
+            <li><input type="checkbox"> {{ item }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('select') }}">メニュー選択へ</a>
+</body>
+</html>

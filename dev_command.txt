@@ -37,4 +37,8 @@ git commit -m "initial commit"
 # Heroku デプロイ（初回）
 heroku login
 heroku create grocery2025
-git push heroku main
+git push heroku master
+※最近はmainがいい
+
+#エラーログ取得
+heroku logs --tail

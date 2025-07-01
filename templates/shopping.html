@@ -3,11 +3,21 @@
 <head><title>買い物リスト</title></head>
 <body>
     <h1>買い物リスト</h1>
-    <ul>
-        {% for item in items %}
-            <li><input type="checkbox"> {{ item }}</li>
-        {% endfor %}
-    </ul>
+
+    {% set grouped = {'vege': [], 'meat': [], 'fish': [], 'othe': []} %}
+    {% for item in items %}
+        {% set _ = grouped[item.category].append(item.name) %}
+    {% endfor %}
+
+    {% for key, label in {'vege': '野菜', 'meat': '肉', 'fish': '魚', 'othe': 'その他'}.items() %}
+        <h2>{{ label }}</h2>
+        <ul>
+            {% for name in grouped[key] %}
+                <li><input type="checkbox"> {{ name }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
     <a href="{{ url_for('select') }}">メニュー選択へ</a>
 </body>
 </html>

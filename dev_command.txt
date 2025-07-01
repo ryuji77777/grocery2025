@@ -7,6 +7,9 @@
 python app.py
 
 #
+python init_db.py
+
+#
 cd grocery2025
 
 #pass

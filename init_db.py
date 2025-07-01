@@ -9,10 +9,15 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 conn = psycopg2.connect(DATABASE_URL)
 cur = conn.cursor()
 
+# 既存のテーブルを削除（開発時のみ。データが消えます）
+cur.execute("DROP TABLE IF EXISTS groceries;")
+
+# テーブルを再作成（category カラムを追加）
 cur.execute("""
-    CREATE TABLE IF NOT EXISTS groceries (
+    CREATE TABLE groceries (
         id SERIAL PRIMARY KEY,
-        item TEXT NOT NULL
+        item TEXT NOT NULL,
+        category TEXT
     );
 """)
 
@@ -20,4 +25,4 @@ conn.commit()
 cur.close()
 conn.close()
 
-print("✅ テーブル作成完了")
+print("✅ groceries テーブルを作成しました（item + category）")

@@ -1,14 +1,64 @@
 <!doctype html>
 <html>
-<head><title>メニュー選択</title></head>
+<head>
+    <title>メニュー選択</title>
+    <script>
+        const menuData = {{ categories | tojson }};
+
+        function updateMenuOptions(dayIndex) {
+            const categorySelect = document.getElementById(`category_${dayIndex}`);
+            const menuSelect = document.getElementById(`menu_${dayIndex}`);
+            const selectedCategory = categorySelect.value;
+
+            menuSelect.innerHTML = "<option value=''></option>";  
+
+            if (menuData[selectedCategory]) {
+                for (const menu of menuData[selectedCategory]) {
+                    const option = document.createElement("option");
+                    option.value = menu;
+                    option.text = menu;
+                    menuSelect.appendChild(option);
+                }
+            }
+        }
+    </script>
+</head>
 <body>
     <h1>メニュー選択</h1>
+
     <form method="POST">
-        <!-- プルダウン7個は後で追加 -->
-        <label>追加の食材:</label>
+        {% for i in range(7) %}
+            <div style="margin-bottom: 1em;">
+                <strong>{{ days[i] }}</strong><br>
+
+                <!-- ジャンルプルダウン -->
+                <select name="category_{{ i }}" id="category_{{ i }}" onchange="updateMenuOptions({{ i }})">
+                    <option value=""></option>
+                    {% for cat_key in categories %}
+                        <option value="{{ cat_key }}">{{ cat_key }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- メニュープルダウン -->
+                <select name="menu_{{ i }}" id="menu_{{ i }}">
+                    <option value=""></option> 
+                </select>
+            </div>
+        {% endfor %}
+
+        <hr>
+
+        <label>自由に食材を追加：</label>
         <input type="text" name="extra">
-        <button type="submit">追加</button>
+
+        <br><br>
+
+        <button type="submit" name="action" value="confirm">メニュー確定</button>
+        <button type="submit" name="action" value="add">食材追加</button>
+        <button type="submit" name="action" value="reset" onclick="return confirm('リストをすべて削除します。よろしいですか？')">リセット</button>
     </form>
+
+    <br>
     <a href="{{ url_for('shopping') }}">買い物リストへ戻る</a>
 </body>
 </html>

@@ -42,3 +42,12 @@ git push heroku master
 
 #エラーログ取得
 heroku logs --tail
+
+#両方反映するためのコマンド
+git add .
+git commit -m "Fix: バグ修正"
+git push heroku main     # Heroku の Web に反映
+git push origin main     # GitHub にソースを保存
+
+#DB変更後の修正反映が必要
+heroku run python init_db.py

@@ -16,20 +16,8 @@ def get_db_connection():
     return psycopg2.connect(DATABASE_URL)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def shopping():
-    if request.method == 'POST':
-        checked_items = request.form.getlist('checked_items')
-        if checked_items:
-            conn = get_db_connection()
-            cur = conn.cursor()
-            for item in checked_items:
-                cur.execute('DELETE FROM groceries WHERE item = %s;', (item,))
-            conn.commit()
-            cur.close()
-            conn.close()
-        return redirect(url_for('shopping'))
-
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('SELECT item, category FROM groceries;')
@@ -37,7 +25,7 @@ def shopping():
     cur.close()
     conn.close()
 
-    items = [{'name': row[0], 'category': row[1]} for row in rows]
+    items = [{'name': row[0], 'category': row[1]} for row in rows]  # 辞書に変換
     return render_template('shopping.html', items=items)
 
 

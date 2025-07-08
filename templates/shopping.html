@@ -1,23 +1,32 @@
 <!doctype html>
 <html>
-<head><title>買い物リスト</title></head>
+<head>
+    <title>買い物リスト</title>
+</head>
 <body>
     <h1>買い物リスト</h1>
 
-    {% set grouped = {'vege': [], 'meat': [], 'fish': [], 'othe': []} %}
-    {% for item in items %}
-        {% set _ = grouped[item.category].append(item.name) %}
-    {% endfor %}
+    <form method="POST" action="{{ url_for('shopping') }}">
+        {% set grouped = {'vege': [], 'meat': [], 'fish': [], 'othe': []} %}
+        {% for item in items %}
+            {% set _ = grouped[item.category].append(item.name) %}
+        {% endfor %}
 
-    {% for key, label in {'vege': '野菜', 'meat': '肉', 'fish': '魚', 'othe': 'その他'}.items() %}
-        <h2>{{ label }}</h2>
-        <ul>
-            {% for name in grouped[key] %}
-                <li><input type="checkbox"> {{ name }}</li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
+        {% for key, label in {'vege': '野菜', 'meat': '肉', 'fish': '魚', 'othe': 'その他'}.items() %}
+            <h2>{{ label }}</h2>
+            <ul>
+                {% for name in grouped[key] %}
+                    <li>
+                        <label>
+                            <input type="checkbox" name="checked_items" value="{{ name }}"> {{ name }}
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
 
-    <a href="{{ url_for('select') }}">メニュー選択へ</a>
+        <button type="submit">チェック済を消去</button>
+        <button type="button" onclick="location.href='{{ url_for('select') }}'">メニュー選択へ</button>
+    </form>
 </body>
 </html>

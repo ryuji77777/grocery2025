@@ -46,8 +46,8 @@ menu_items = {
         {"name": "鶏もも肉", "category": "meat"}
     ],
 
-    # オーブン＆パスタ 
-    "ひき肉ポテト＆ペロンチーノ": [
+    # オーブン＆パスタ
+    "ひき肉ポテト＆ ぺぺロンチーノ": [
         {"name": "じゃがいも", "category": "vege"},
         {"name": "合いびき肉", "category": "meat"},
         {"name": "にんにく", "category": "vege"},

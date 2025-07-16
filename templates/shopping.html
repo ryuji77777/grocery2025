@@ -2,8 +2,23 @@
 <html>
 <head>
     <title>買い物リスト</title>
+    <style>
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+    </style>
 </head>
 <body>
+    <h1>メニュー</h1>
+    <ul>
+        {% for entry in menus %}
+            <li>{{ entry }}</li>
+        {% else %}
+            <li>未選択</li>
+        {% endfor %}
+    </ul>
+  
     <h1>買い物リスト</h1>
 
     <form method="POST" action="{{ url_for('shopping') }}">

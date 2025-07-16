@@ -34,9 +34,18 @@
                 <!-- ジャンルプルダウン -->
                 <select name="category_{{ i }}" id="category_{{ i }}" onchange="updateMenuOptions({{ i }})">
                     <option value=""></option>
+                    {% set category_labels = {
+                        "nabe": "鍋料理",
+                        "stew": "煮込み料理",
+                        "oven": "オーブン料理",
+                        "rice": "米料理",
+                        "free": "その他"
+                    } %}
+
                     {% for cat_key in categories %}
-                        <option value="{{ cat_key }}">{{ cat_key }}</option>
+                        <option value="{{ cat_key }}">{{ category_labels[cat_key] }}</option>
                     {% endfor %}
+
                 </select>
 
                 <!-- メニュープルダウン -->
@@ -53,8 +62,8 @@
 
         <br><br>
 
-        <button type="submit" name="action" value="confirm">メニュー確定</button>
-        <button type="submit" name="action" value="add">食材追加</button>
+        <button type="submit" name="action" value="confirm">メニュー更新</button>
+        <button type="submit" name="action" value="add">追加</button>
         <button type="submit" name="action" value="reset" onclick="return confirm('リストをすべて削除します。よろしいですか？')">リセット</button>
     </form>
 

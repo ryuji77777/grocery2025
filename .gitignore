@@ -1,0 +1,19 @@
+# Pythonのキャッシュファイル
+__pycache__/
+*.pyc
+
+# 仮想環境（venv）
+venv/
+
+# 環境変数ファイル
+.env
+
+# エディタの設定ファイル
+.vscode/
+
+# バックアップフォルダ（自分で追加したやつ）
+backup/
+
+# その他、OSの一時ファイル
+.DS_Store
+Thumbs.db

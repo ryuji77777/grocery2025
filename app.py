@@ -67,10 +67,12 @@ def shopping():
     ]
 
     # メニュー表示用の読み込み
-    menus = []
-    if os.path.exists('selected_menu.txt'):
-        with open('selected_menu.txt', 'r', encoding='utf-8') as f:
-            menus = [line.strip() for line in f if line.strip()]
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT date_str, menu_name FROM menus ORDER BY date_str;")
+    menus = [f"{row[0]}: {row[1]}" for row in cur.fetchall()]
+    cur.close()
+    conn.close()
 
     return render_template('shopping.html', items=items, menus=menus)
 
@@ -85,63 +87,58 @@ def select():
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("DELETE FROM groceries;")
+            cur.execute("DELETE FROM menus;")
             conn.commit()
             cur.close()
             conn.close()
 
-            # メニュー履歴も初期化
-            open('selected_menu.txt', 'w', encoding='utf-8').close()
             return redirect(url_for('select'))
 
         if action in ("add", "confirm"):
+            today = datetime.today()
             selected_menus = {}
 
+            # 7日分のメニューを収集
             for i in range(7):
-                menu = request.form.get(f"menu_{i}")
-                # print(f"[DEBUG] menu_{i}: {menu}")
-
+                menu_value = request.form.get(f"menu_{i}")
+                if not menu_value:
+                    continue
                 weekday_en = (today + timedelta(days=i)).strftime('%a')
                 weekday_jp = convert_weekday_en_to_jp(weekday_en)
                 date_str = (today + timedelta(days=i)).strftime("%m月%d日(") + weekday_jp + ")"
+                selected_menus[date_str] = menu_value
 
-                if menu:
-                    selected_menus[date_str] = menu
+            # メニューをDBに保存（上書き対応）
+            conn = get_db_connection()
+            cur = conn.cursor()
+            for date_str, menu_value in selected_menus.items():
+                cur.execute("""
+                    INSERT INTO menus (date_str, menu_name)
+                    VALUES (%s, %s)
+                    ON CONFLICT (date_str) DO UPDATE SET menu_name = EXCLUDED.menu_name;
+                """, (date_str, menu_value))
+            conn.commit()
+            cur.close()
+            conn.close()
 
-                    if action == "add":
-                        with open('selected_menu.txt', 'a', encoding='utf-8') as f:
-                            f.write(f"{date_str}: {menu}\n")
+            # 必要な食材をDBに追加（全日分まとめて）
+            conn = get_db_connection()
+            cur = conn.cursor()
+            for menu_value in selected_menus.values():
+                if menu_value in menu_items:
+                    for item in menu_items[menu_value]:
+                        try:
+                            cur.execute(
+                                'INSERT INTO groceries (item, category) VALUES (%s, %s);',
+                                (item["name"], item["category"])
+                            )
+                        except Exception as e:
+                            print(f"Error inserting item {item['name']} with category {item['category']}: {e}")
+            conn.commit()
+            cur.close()
+            conn.close()
 
-                    if action == "confirm":
-                        # 後で全体を上書きするため記録のみ
-
-                        pass  # 上書きはループの後で行う
-
-                    if menu in menu_items:
-                        ingredients = menu_items[menu]
-                        conn = get_db_connection()
-                        cur = conn.cursor()
-                        for item in ingredients:
-                            try:
-                                cur.execute(
-                                    'INSERT INTO groceries (item, category) VALUES (%s, %s);',
-                                    (item["name"], item["category"])
-                                )
-                            except Exception as e:
-                                print(f"Error inserting item {item['name']} with category {item['category']}: {e}")
-                        conn.commit()
-                        cur.close()
-                        conn.close()
-
-            # confirm のときは最後に selected_menu.txt を上書き
-            if action == "confirm":
-                with open('selected_menu.txt', 'w', encoding='utf-8') as f:
-                    for date_str, menu in selected_menus.items():
-                        f.write(f"{date_str}: {menu}\n")
-
-                        # ※メニューの値を表示して確認　
-                        # menu = request.form.get(f"menu_{i}")
-                        # print(menu)
-
+            # 追加の買い物リスト（extra）処理
             extra = request.form.get('extra')
             if extra:
                 split_items = re.split(r'[、,\s\u3000]+', extra.strip())

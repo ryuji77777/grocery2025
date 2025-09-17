@@ -10,7 +10,7 @@
             const menuSelect = document.getElementById(`menu_${dayIndex}`);
             const selectedCategory = categorySelect.value;
 
-            menuSelect.innerHTML = "<option value=''></option>";  
+            menuSelect.innerHTML = "<option value=''></option>";
 
             if (menuData[selectedCategory]) {
                 for (const menu of menuData[selectedCategory]) {
@@ -27,9 +27,9 @@
     <h1>メニュー選択</h1>
 
     <form method="POST">
-        {% for i in range(7) %}
-            <div style="margin-bottom: 1em;">
-                <strong>{{ days[i] }}</strong><br>
+        {% for i in range(8) %}
+            <div style="margin-bottom: 1em; display: flex; gap: 10px; align-items: center;">
+                <strong>{{ days[i] }}</strong>
 
                 <!-- ジャンルプルダウン -->
                 <select name="category_{{ i }}" id="category_{{ i }}" onchange="updateMenuOptions({{ i }})">
@@ -39,19 +39,22 @@
                         "stew": "煮込み料理",
                         "oven": "オーブン料理",
                         "rice": "米料理",
-                        "free": "その他"
+                        "udon": "うどん",
+                        "rusu": "留守番",
+                        "etal": "その他"
                     } %}
-
                     {% for cat_key in categories %}
                         <option value="{{ cat_key }}">{{ category_labels[cat_key] }}</option>
                     {% endfor %}
-
                 </select>
 
                 <!-- メニュープルダウン -->
                 <select name="menu_{{ i }}" id="menu_{{ i }}">
-                    <option value=""></option> 
+                    <option value=""></option>
                 </select>
+
+                <!-- 自由記載 -->
+                <input type="text" name="free_menu_{{ i }}" placeholder="自由記載">
             </div>
         {% endfor %}
 

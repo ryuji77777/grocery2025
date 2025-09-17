@@ -51,3 +51,10 @@ git push origin main     # GitHub にソースを保存
 
 #DB変更後の修正反映が必要
 heroku run python init_db.py
+
+#DB
+psql $DATABASE_URL
+パスワード　6+pg
+SELECT * FROM groceries;
+SELECT * FROM menus;
+停止はq

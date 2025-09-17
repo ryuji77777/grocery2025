@@ -91,6 +91,35 @@ menu_items = {
         {"name": "豚肉", "category": "meat"}
     ],
 
+    # うどん
+    "うどん": [
+        {"name": "鶏もも肉", "category": "meat"},
+        {"name": "うどん野菜", "category": "vege"},
+        {"name": "ごぼう", "category": "vege"},
+        {"name": "うどん麺", "category": "othe"},
+        {"name": "油揚げ", "category": "othe"}
+    ],
+    # 留守
+    "三食丼": [
+        {"name": "丼野菜", "category": "vege"},
+        {"name": "鳥ひき肉", "category": "meat"}
+    ],
+    "海鮮丼": [
+        {"name": "アボカド", "category": "vege"},
+        {"name": "刺身", "category": "fish"}
+    ],
+    "豚丼": [
+        {"name": "玉ねぎ", "category": "vege"},
+        {"name": "丼豚肉", "category": "meat"},
+        {"name": "しょうが", "category": "vege"},
+        {"name": "糸こんにゃく", "category": "othe"}
+    ],
+    "タコライス": [
+        {"name": "レタス", "category": "vege"},
+        {"name": "合いびき肉", "category": "meat"},
+        {"name": "タコライスの素", "category": "othe"},
+        {"name": "サルサソース", "category": "othe"}
+    ],
     # 自由料理
     "ちらし寿司": [
         {"name": "刺身", "category": "fish"},
@@ -107,11 +136,5 @@ menu_items = {
         {"name": "えび", "category": "fish"},
         {"name": "豚肉", "category": "meat"},
         {"name": "お好み焼き粉", "category": "othe"}
-    ],
-    "タコライス": [
-        {"name": "レタス", "category": "vege"},
-        {"name": "合いびき肉", "category": "meat"},
-        {"name": "タコライスの素", "category": "othe"},
-        {"name": "サルサソース", "category": "othe"}
     ]
 }

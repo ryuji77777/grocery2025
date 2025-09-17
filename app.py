@@ -100,13 +100,18 @@ def select():
 
             # 7日分のメニューを収集
             for i in range(7):
+                free_value = request.form.get(f"free_menu_{i}", "").strip()
                 menu_value = request.form.get(f"menu_{i}")
-                if not menu_value:
+
+                # 自由記載が優先、なければプルダウン
+                final_value = free_value if free_value else menu_value
+                if not final_value:
                     continue
+
                 weekday_en = (today + timedelta(days=i)).strftime('%a')
                 weekday_jp = convert_weekday_en_to_jp(weekday_en)
                 date_str = (today + timedelta(days=i)).strftime("%m月%d日(") + weekday_jp + ")"
-                selected_menus[date_str] = menu_value
+                selected_menus[date_str] = final_value
 
             # メニューをDBに保存（上書き対応）
             conn = get_db_connection()
@@ -121,11 +126,11 @@ def select():
             cur.close()
             conn.close()
 
-            # 必要な食材をDBに追加（全日分まとめて）
+            # プルダウンで選ばれたメニューのみ → 食材をDBに追加
             conn = get_db_connection()
             cur = conn.cursor()
             for menu_value in selected_menus.values():
-                if menu_value in menu_items:
+                if menu_value in menu_items:  # menu_itemsにある（＝プルダウン）ときだけ
                     for item in menu_items[menu_value]:
                         try:
                             cur.execute(
@@ -162,13 +167,33 @@ def select():
     # GET時
     today = datetime.today()
     days = []
-    for i in range(7):
+    for i in range(8):
         day = today + timedelta(days=i)
         weekday_en = day.strftime('%a')
         weekday_jp = convert_weekday_en_to_jp(weekday_en)
         days.append(f"{day.month}月{day.day}日（{weekday_jp}）")
 
     return render_template('select.html', days=days, categories=menu_categories)
+
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_item():
+    if request.method == 'POST':
+        item_name = request.form.get("item_name")
+        if item_name:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute(
+                "INSERT INTO groceries (item, category) VALUES (%s, %s);",
+                (item_name, 'othe')
+            )
+            conn.commit()
+            cur.close()
+            conn.close()
+            return redirect(url_for('add_item', added=item_name))
+
+    added_item = request.args.get("added")
+    return render_template("add_item.html", added_item=added_item)
 
 
 if __name__ == '__main__':

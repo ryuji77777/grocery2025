@@ -1,0 +1,11 @@
+<form method="POST">
+  <label>食材名：</label>
+  <input type="text" name="item_name" required>
+  <br><br>
+
+  {% if added_item %}
+    <p>「{{ added_item }}」が追加されました。</p>
+  {% endif %}
+
+  <button type="submit">追加</button>
+</form>

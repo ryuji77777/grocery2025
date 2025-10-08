@@ -120,7 +120,11 @@ menu_items = {
         {"name": "タコライスの素", "category": "othe"},
         {"name": "サルサソース", "category": "othe"}
     ],
-    # 自由料理
+    # その他料理
+    "家にあるもの": [
+    ],
+    "中食": [
+    ],
     "ちらし寿司": [
         {"name": "刺身", "category": "fish"},
         {"name": "かんぴょう", "category": "othe"},
